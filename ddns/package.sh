@@ -20,7 +20,7 @@ CGO_ENABLED=0 go build aliyun_ddns_app.go
 echo "package done"
 ls -alh | grep aliyun
 
-docker build -t registry.cn-shanghai.aliyuncs.com/jrdn/aliyun_ddns_app:$package_version .
-docker push registry.cn-shanghai.aliyuncs.com/jrdn/aliyun_ddns_app:$package_version
+docker build -t hailang8635/aliyun_ddns_app:$package_version .
+docker push hailang8635/aliyun_ddns_app:$package_version
 
 rm -rf aliyun_ddns_app
