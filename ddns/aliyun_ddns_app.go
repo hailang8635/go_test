@@ -135,12 +135,12 @@ func SetDomainRecordInfo(ipWanValue string) (_err error) {
     "Status": "ENABLE",
     "RR": "nas",
     "RequestId": "FD51428C-1CC4-5F9E-B5B2-1248B909479D",
-    "DomainName": "okzhang.com",
+    "DomainName": "xxx.com",
     "TTL": 600,
     "Line": "default",
     "Locked": false,
     "Type": "AAAA",
-    "Value": "240e:388:8b2f:cb00:211:32ff:fe11:2233",
+    "Value": "240e:xxx:xxx:xxx:2233",
     "RecordId": "19966927349687296"
  }
  */
@@ -172,6 +172,7 @@ func GetDomainRecordInfo() (value string, _err error) {
 }
 
 func GetHostWanIp() (value string, _err error){
+    log.Println(time.Now().Local(), "start 获取公网IP")
 
     toolUrl := [] string {
         //"https://www.baidu.com",
@@ -194,14 +195,14 @@ func GetHostWanIp() (value string, _err error){
                 json, _ := simplejson.NewFromReader(resp.Body)
                 ip, _ := json.Get("ip").String()
                 if ip != "" {
-                    log.Println("查得IP ", url, " ----> " , ip)
+                    log.Println(time.Now().Local(), "查得IP ", url, " ----> " , ip)
                     return ip, nil
                 }
             } else {
                 body, _ := ioutil.ReadAll(resp.Body)
                 resultBody := strings.ReplaceAll(string(body), "\n", "")
 
-                log.Println("查得IP ", url, " ----> " , resultBody)
+                log.Println(time.Now().Local(), "查得IP ", url, " ----> " , resultBody)
                 return resultBody, nil
             }
         }
