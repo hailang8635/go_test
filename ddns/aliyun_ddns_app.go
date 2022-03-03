@@ -1,4 +1,3 @@
-// This file is auto-generated, don't edit it. Thanks.
 package main
 
 import (
@@ -39,7 +38,7 @@ func main() {
 
     // ${AKID} ${AKSCT} ${RR} ${RECORDID} ${TYPE} ${TTL}
     if len(os.Args) != 7 {
-        log.Fatal("请设置 accessKeyId accessSecret rr recordId type ttl ")
+        log.Fatal("请设置 1accessKeyId 2accessSecret 3rr 4recordId 5type 6ttl ")
     }
     accessKeyId     = os.Args[1]
     accessSecret    = os.Args[2]
