@@ -1,3 +1,7 @@
+docker pull registry.cn-shanghai.aliyuncs.com/jrdn/aliyun_ddns_app:1.0.0
+docker stop aliyun_ddns_smart
+docker rm aliyun_ddns_smart
+
 docker run -d --name=aliyun_ddns_smart --restart=always --net=host \
     -e "AKID=" \
     -e "AKSCT=" \

@@ -34,7 +34,7 @@ var ttl_ int
 var userClientIp string = "101.88.247.188"
 
 func main() {
-    log.Println("启动参数：", os.Args)
+    log.Println("启动参数列表2：", os.Args[3:])
 
     // ${AKID} ${AKSCT} ${RR} ${RECORDID} ${TYPE} ${TTL}
     if len(os.Args) != 7 {
@@ -122,7 +122,7 @@ func SetDomainRecordInfo(ipWanValue string) (_err error) {
     // 复制代码运行请自行打印 API 的返回值
     resp, _err := client.UpdateDomainRecord(updateDomainRecordRequest)
     if _err != nil {
-        log.Fatal(time.Now().Local(), "设置DNS失败", resp, _err)
+        log.Println(time.Now().Local(), "设置DNS失败", resp, _err)
         return _err
     } else {
         log.Println(time.Now().Local(), "设置DNS成功", resp.Body)
@@ -131,6 +131,7 @@ func SetDomainRecordInfo(ipWanValue string) (_err error) {
 }
 
 /**
+ example:
  body": {
     "Status": "ENABLE",
     "RR": "nas",
@@ -149,14 +150,14 @@ func GetDomainRecordInfo() (value string, _err error) {
 
     client, _err := CreateClient(tea.String(accessKeyId), tea.String(accessSecret))
     if _err != nil {
-        log.Fatal("初始化客户端失败...", _err)
+        log.Println("初始化客户端失败...", _err)
         return "", _err
     }
 
     request := &alidns20150109.DescribeDomainRecordInfoRequest{Lang: tea.String(lang), UserClientIp: tea.String(userClientIp), RecordId: tea.String(recordId)}
     resp, _err := client.DescribeDomainRecordInfo(request)
     if _err != nil {
-        log.Fatal("获取DNS配置失败", _err)
+        log.Println("获取DNS配置失败", _err)
         return "", _err
     }  else {
         //fmt.Println(resp)

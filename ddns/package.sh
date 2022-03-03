@@ -14,7 +14,11 @@ fi
 
 echo "package $package_version .."
 
+echo "start package"
+ls -alh | grep aliyun
 CGO_ENABLED=0 go build aliyun_ddns_app.go
+echo "package done"
+ls -alh | grep aliyun
 
 docker build -t registry.cn-shanghai.aliyuncs.com/jrdn/aliyun_ddns_app:$package_version .
 docker push registry.cn-shanghai.aliyuncs.com/jrdn/aliyun_ddns_app:$package_version

@@ -11,9 +11,6 @@ RUN ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN pwd
-RUN ls -alh
-
 ENTRYPOINT aliyun_ddns_app ${AKID} ${AKSCT} ${RR} ${RECORDID} ${TYPE} ${TTL}
 #CMD ["sleep", "3600"]
 
