@@ -3,3 +3,5 @@
 target/*
 go.sum
 go.mod
+**/7380947_nas.okzhang.com.key
+**/7380947_nas.okzhang.com.pem
