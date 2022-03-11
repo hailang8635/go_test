@@ -1,0 +1,95 @@
+FROM alpine:3.10
+#FROM nginx
+VOLUME /opt
+MAINTAINER smart.zhang
+
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# wget http://tengine.taobao.org/download/tengine-2.2.3.tar.gz &&
+# wget "https://ftp.pcre.org/pub/pcre/pcre-8.44.tar.gz"
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+
+RUN apk add wget gcc g++ make
+
+RUN mkdir /usr/local/src -p
+ADD tengine-2.2.3.tar.gz /usr/local/src/
+ADD pcre-8.44.tar.gz /usr/local/src/
+ADD openssl-1.1.1m.tar.gz /usr/local/src/
+ADD zlib-1.2.11.tar.gz /usr/local/src/
+ADD perl-5.30.1.tar.gz /usr/local/src/
+
+RUN ls -ah /usr/local/src/
+#RUN ls -ah /usr/local/src/tengine-2.2.3
+##RUN ls -alh /usr/local/src/pcre-8.44
+#RUN ls -ah /usr/local/src/openssl-1.1.1m
+#RUN ls -ah /usr/local/src/zlib-1.2.11
+
+RUN cd /usr/local/src/perl-5.30.1 && ./Configure -des && make && make install \
+#    -Dprefix=$HOME/localperl \
+
+RUN perl -v
+
+# && tar -zxf tengine-2.2.3.tar.gz
+RUN cd /usr/local/src && pwd && ls -alh tengine-2.2.3 && cd tengine-2.2.3 && ./configure --prefix=/usr/local/nginx --with-pcre=/usr/local/src/pcre-8.44 --with-ipv6 \
+--pid-path=/var/run/nginx.pid \
+--lock-path=/var/run/nginx.lock \
+--http-client-body-temp-path=/usr/local/nginx/client_temp \
+--http-proxy-temp-path=/usr/local/nginx/proxy_temp \
+--http-fastcgi-temp-path=/usr/local/nginx/fastcgi_temp \
+--http-uwsgi-temp-path=/usr/local/nginx/uwsgi_temp \
+--http-scgi-temp-path=/usr/local/nginx/scgi_temp \
+--user=nginx \
+--group=nginx \
+--with-mail \
+#--with-stream \
+--with-threads \
+#--with-file-aio \
+--with-poll_module \
+--with-select_module \
+--with-http_v2_module \
+--with-http_flv_module \
+--with-http_mp4_module \
+--with-http_sub_module \
+--with-http_dav_module \
+--with-http_flv_module \
+--with-http_ssl_module \
+#--with-http_geoip_module \
+--with-http_slice_module \
+--with-http_gunzip_module \
+--with-http_realip_module \
+--with-http_addition_module \
+#--with-http_image_filter_module \
+--with-http_gzip_static_module \
+--with-http_random_index_module \
+--with-http_secure_link_module \
+--with-http_degradation_module \
+--with-http_stub_status_module \
+--with-mail_ssl_module \
+#--with-stream_ssl_module \
+#--with-stream_realip_module \
+#--with-stream_ssl_preread_module \
+#--with-pcre=/usr/src/pcre-8.44 \
+--with-openssl=/usr/local/src/openssl-1.1.1m \
+--with-zlib=/usr/local/src/zlib-1.2.11 && \
+make && make install && \
+# 清理文件
+#rm -rf /usr/src/openssl-1.1.1f/test/ && yum clean all && \
+# 配置文件
+cp /usr/src/nginx.conf /usr/local/nginx/conf/ && \
+# 日志输出
+ln -sf /dev/stdout /usr/local/nginx/logs/access.log && \
+ln -sf /dev/stderr /usr/local/nginx/logs/error.log
+
+# 环境变量
+ENV PATH $PATH:/usr/local/nginx/sbin
+
+# 开放端口
+EXPOSE 80 443
+
+# 工作目录
+WORKDIR /usr/local/nginx
+
+# 执行命令
+CMD [ "nginx","-g","daemon off;" ]

@@ -5,3 +5,4 @@ go.sum
 go.mod
 **/7380947_nas.okzhang.com.key
 **/7380947_nas.okzhang.com.pem
+web_files/Dockerfile_list/*.tar.gz
