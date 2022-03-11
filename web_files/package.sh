@@ -14,4 +14,4 @@ fi
 
 echo "package $package_version .."
 docker build -t registry.cn-shanghai.aliyuncs.com/jrdn/nginx-web-files:0.0.1 .
-#docker push registry.cn-shanghai.aliyuncs.com/jrdn/nginx-web-files:0.0.1
+docker push registry.cn-shanghai.aliyuncs.com/jrdn/nginx-web-files:0.0.1

@@ -8,9 +8,9 @@ services:
       - "443:443"
     networks:
       - "netNameBankHh"
-#    volumes:
-##      - /opt/jrdn/nginx_bank/logs:/var/log/nginx
-#      - /opt/jrdn/web-files:/data/web
+    volumes:
+      #- /opt/jrdn/nginx_web_files/logs/:/var/log/nginx/
+      - /data/yfiles:/data/files/yfiles
     restart: always
 networks:
   netNameBankHh:
