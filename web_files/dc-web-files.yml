@@ -1,7 +1,8 @@
 version: '2'
 services:
   nginx-web-files:
-    image: registry.cn-shanghai.aliyuncs.com/jrdn/nginx-web-files:0.0.1
+    image: registry.cn-shanghai.aliyuncs.com/jrdn/nginx-web-files:0.0.2
+#    image: registry.cn-shanghai.aliyuncs.com/jrdn/alpine-ng:0.1
 #    image: tengine-ipv6:0.1
     container_name: web-files
     ports:
