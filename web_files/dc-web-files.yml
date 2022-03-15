@@ -5,11 +5,12 @@ services:
 #    image: registry.cn-shanghai.aliyuncs.com/jrdn/alpine-ng:0.1
 #    image: tengine-ipv6:0.1
     container_name: web-files
-    ports:
-      - "80:80"
-      - "443:443"
-    networks:
-      - "netNameBankHh"
+    network_mode: host
+#    ports:
+#      - "1080:1080"
+#      - "1443:1443"
+#    networks:
+#      - "netNameBankHh"
     volumes:
       - /opt/jrdn/nginx_web_files/logs/:/var/log/nginx/
       - /data/yfiles:/data/files/yfiles
