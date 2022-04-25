@@ -24,6 +24,8 @@ SET CGO_ENABLED=0
 ## go get
 
 ```
+https://www.cnblogs.com/netflix/p/14946214.html
+
 go get -u github.com/gorilla/mux
 go get -u github.com/gorilla/sessions
 go get -u github.com/go-sql-driver/mysql
