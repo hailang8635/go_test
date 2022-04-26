@@ -1,4 +1,4 @@
-package main
+package chapter_0425
 
 import (
     "database/sql"
@@ -17,9 +17,9 @@ func main() {
 
     job := time.Now().Unix()
 
-    files, err := WalkDir(0, "Q:\\视频类\\(.mkv) MKV 视频文件/", "")
+    files, err := WalkDir(0, "Q:/视频类/", "")
     fmt.Println()
-    fmt.Println(files, err)
+    // fmt.Println(files, err)
 
     if err == nil {
         SaveFileInfo(job, files)
@@ -61,7 +61,7 @@ func WalkDir(level int, dirPath, suffix string) (files [][]string, err error) {
 
 func SaveFileInfo(job int64, fileInfoArr [][]string) error {
 
-    insertSql := "insert into file_find(job, file_full_name, size) values "
+    insertSql := "replace into file_find(job, file_full_name, size) values "
     //params := make([]string, 0, 100)
     params := make([]interface{}, 0, len(fileInfoArr) * 3)
     for _, fileInfo := range fileInfoArr {

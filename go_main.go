@@ -2,10 +2,10 @@ package main
 
 import (
     "fmt"
-    "go_test_1122/chapter_0209"
-    "go_test_1122/chapter_1125"
-    "go_test_1122/chapter_chan"
-    "go_test_1122/stun"
+    //"chapter_0209"
+    //"chapter_1125"
+    //"chapter_chan"
+    //"stun"
     "time"
 )
 
@@ -13,7 +13,11 @@ func main() {
     //testChapter1125()
     //test_chan()
     //testDay1()
-    testDay2()
+    //testDay2()
+}
+
+func test_0425() {
+    //chapter_0425.()
 }
 
 func testDay2() {
@@ -29,21 +33,21 @@ func testDay1() {
     //fmt.Println(chapter_0209.TwoSum(nums, targetNum))
 
     //nums := []int{-1,0,1,2,-1,-4}
-    nums := []int{1,2,-2,-1}
+    //nums := []int{1,2,-2,-1}
 
-    start := time.Now().UnixMilli()
+    start := time.Now().Unix()
     fmt.Println(time.Now())
     //fmt.Println(chapter_0209.ThreeSum(nums))
-    fmt.Println(len(chapter_0209.ThreeSum(nums)))
+    //fmt.Println(len(chapter_0209.ThreeSum(nums)))
     //fmt.Println(len(chapter_0209.ThreeSumBak(nums)))
     fmt.Println(time.Now())
-    end := time.Now().UnixMilli()
+    end := time.Now().Unix()
     fmt.Println(end - start)
 
 }
 
 func test_chan() {
-    chapter_chan.Test_main()
+    //chapter_chan.Test_main()
 }
 
 func testChapter1125() {
@@ -55,7 +59,7 @@ func testChapter1125() {
 
     // chapter_1125.TestJSON()
 
-    chapter_1125.Show()
+    //chapter_1125.Show()
 
     //var result1, result2 = chapter_1125.Split(17)
     //fmt.Println(result1)
@@ -76,7 +80,7 @@ func testChapterHttp() {
     //chapter_http.Test_sessions()
 
 
-    stun.TestStun()
+    //stun.TestStun()
 
 }
 

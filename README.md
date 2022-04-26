@@ -25,6 +25,9 @@ SET CGO_ENABLED=0
 
 ```
 https://www.cnblogs.com/netflix/p/14946214.html
+go mod init gin
+go mod edit -require github.com/gin-gonic/gin@latest
+
 
 go get -u github.com/gorilla/mux
 go get -u github.com/gorilla/sessions
@@ -36,4 +39,11 @@ go get -u github.com/bitly/go-simplejson
 go get -u github.com/alibabacloud-go/alidns-20150109/v2/client
 go get -u github.com/alibabacloud-go/darabonba-openapi/client
 go get -u github.com/alibabacloud-go/tea/tea
+
+go get -u github.com/dhowden/tag@latest
+
+go get -u golang.org/x/text/transform@v0.3.7
+go get -u golang.org/x/text/encoding/simplifiedchinese@v0.3.7
+go mod edit -require golang.org/x/text/transform@v0.3.7
+go mod edit -require golang.org/x/text/encoding/simplifiedchinese@v0.3.7
 ```
