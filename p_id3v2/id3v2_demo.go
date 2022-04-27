@@ -1,29 +1,40 @@
 package main
 
 import (
+    "bytes"
+    "encoding/hex"
     "fmt"
     "github.com/dhowden/tag"
+    "golang.org/x/text/encoding/simplifiedchinese"
+    "golang.org/x/text/transform"
     "io/ioutil"
     "log"
     "os"
     "path/filepath"
     "strings"
+    "unicode/utf8"
 )
+
 func mv() {
     path, _ := filepath.Split("Q:/音频类/test/许巍/曾经的你(吉他版).mp3")
     err := os.MkdirAll(path, os.ModePerm)
     fmt.Println(err)
-    err = os.Rename("Q:\\音频类\\test\\00000.mp3", "Q:/音频类/test/许巍/曾经的你(吉他版).mp3")
+    err = os.Rename("Q:/音频类/test/00000.mp3", "Q:/音频类/test/许巍/曾经的你(吉他版).mp3")
     fmt.Println(err)
 
 }
 
 func main() {
     //mv()
-    mvMp3("Q:\\音频类\\(.mp3) MP3 声音文件")
+    //mvMp3("Q:/音频类/(.mp3) MP3 声音文件")
+
+    //TestChar()
+    //
+    mvMp3("Q:/音频类", "Q:/dest")
+    //mvMp3("Q:/test", "Q:/dest2/")
 }
 
-func mvMp3(parentDir string) {
+func mvMp3(parentDir string, destDir string) {
 
     _, err := os.Stat(parentDir)
     if err != nil {
@@ -31,7 +42,7 @@ func mvMp3(parentDir string) {
         log.Fatal(err)
     }
     //TestPath("Q:/音频类/test/")
-    files, err := FixFileName(parentDir)
+    files, err := FixFileName(parentDir, destDir)
 
     if err != nil {
         log.Fatal("FixFileName失败", err)
@@ -58,28 +69,31 @@ func mvMp3(parentDir string) {
             basePath, _ := filepath.Split(fileElement[1])
             err = os.MkdirAll(basePath, os.ModePerm)
             if err != nil {
-                fmt.Println("创建文件夹出错", basePath, err)
+                log.Fatal("创建文件夹出错", basePath, err)
             }
 
             err = os.Rename(fileElement[0], fileElement[1])
             if err != nil {
-                log.Println("Rename error", err)
+                log.Fatal("Rename error", err)
             }
         }
     }
 
 }
 
-func FixFileName(parentDir string) (files [][]string, err error) {
+func FixFileName(parentDir string, destDir string) (files [][]string, err error) {
     files = make([][]string, 0, 100)
+    count := 0
+    noTagCount := 0
+    succCount := 0
 
     filepath.Walk(parentDir,
         func (fileName string, file os.FileInfo, err error) error {
-
             if file.IsDir() {
                 fmt.Println("目录", fileName)
                 return nil
             } else {
+                count++
             }
             fileRead, _ := os.Open(fileName)
             metaInfo, err := tag.ReadFrom(fileRead)
@@ -87,7 +101,8 @@ func FixFileName(parentDir string) (files [][]string, err error) {
             defer fileRead.Close()
 
             if err != nil {
-                log.Println("tag.ReadFrom error ", err)
+                //log.Println("tag.ReadFrom error ", err)
+                noTagCount++
                 return nil
             }
 
@@ -96,15 +111,21 @@ func FixFileName(parentDir string) (files [][]string, err error) {
             if metaInfo.Title() + ext == file.Name() {
                 fmt.Println("\t 无需重命名 ", fileName)
                 return nil
-            } else {
             }
+            succCount++
 
-            midPath := []string{parentDir}
+            midPath := []string{""}
 
             artist := metaInfo.Artist()
-            if metaInfo.Artist() == "" {
+            if strings.Trim(metaInfo.Artist(), "") == "" {
                 artist = file.Name()
             }
+
+            //fmt.Println(len(artist), len([]byte(artist)))
+            //fmt.Println(strings.ToUpper(hex.EncodeToString([]byte(artist))))
+            //c1,_ := GbkToUtf8Str(artist)
+            //c2,_ := Utf8ToGbkStr(artist)
+            //fmt.Println("-->", c1, "   ", c2, []byte(artist))
 
             midPath = append(midPath, artist)
 
@@ -114,16 +135,34 @@ func FixFileName(parentDir string) (files [][]string, err error) {
 
             if metaInfo.Title() != "" {
                 midPath = append(midPath, metaInfo.Title() + ext)
+            } else {
+                midPath = append(midPath, file.Name())
             }
 
-            newName := strings.Join(midPath, "/")
+            newName := destDir +
+                strings.ReplaceAll(
+                    strings.ReplaceAll(
+                        strings.ReplaceAll(
+                        strings.ReplaceAll(
+                        strings.ReplaceAll(
+                        strings.ReplaceAll(
+                        strings.ReplaceAll(
+                            strings.ReplaceAll(strings.Join(midPath, "/"), ":", ""),
+                        " ",""),
+                        "*",""),
+                    "?",""),
+                    "<",""),
+                    ">",""),
+                    "\\",""),
+                "\"","")
             fileElement := []string{fileName, newName}
 
             //log.Println(fileName, " ---> ", newName)
             files = append(files, fileElement)
 
             return nil
-        })
+    })
+    log.Printf("总：%d 成功：%d 无标签：%d \n", count, succCount, noTagCount)
 
     return files, nil
 }
@@ -164,7 +203,88 @@ func TestPath(path string) {
 
 }
 
+// GBK 转 UTF-8
+func GbkToUtf8Str(s string) (string, error) {
+    reader := transform.NewReader(bytes.NewReader([]byte(s)), simplifiedchinese.GBK.NewDecoder())
+    d, e := ioutil.ReadAll(reader)
+    if e != nil {
+        return "", e
+    }
+    //fmt.Println(string(d))
+    return string(d), nil
+}
 
+// UTF-8 转 GBK
+func Utf8ToGbkStr(s string) (string, error) {
+    reader := transform.NewReader(bytes.NewReader([]byte(s)), simplifiedchinese.GBK.NewEncoder())
+    d, e := ioutil.ReadAll(reader)
+    if e != nil {
+        return "", e
+    }
+    //fmt.Println(strings.ToUpper(hex.EncodeToString(d)))
+    return string(d), nil
+}
+
+
+
+func GbkToUtf8(s []byte) ([]byte, error) {
+    reader := transform.NewReader(bytes.NewReader(s), simplifiedchinese.GBK.NewDecoder())
+    d, e := ioutil.ReadAll(reader)
+    if e != nil {
+        return nil, e
+    }
+    //fmt.Println(string(d))
+    return d, nil
+}
+
+// UTF-8 转 GBK
+func Utf8ToGbk(s []byte) ([]byte, error) {
+    reader := transform.NewReader(bytes.NewReader(s), simplifiedchinese.GBK.NewEncoder())
+    d, e := ioutil.ReadAll(reader)
+    if e != nil {
+        return nil, e
+    }
+    //fmt.Println(strings.ToUpper(hex.EncodeToString(d)))
+    return d, nil
+}
+
+func TestChar() {
+
+    //fmt.Println([]byte("十"))
+    //fmt.Println([]byte("Ê®"))
+    fmt.Println(hex.EncodeToString([]byte("Ê®")))
+    //fmt.Println(hex.EncodeToString([]byte("Ê®¶þ´óÃÀÅ®")))
+
+    //fmt.Println(hex.EncodeToString([]byte("TPE1")))
+    //s := "十二大美女"
+
+    // GBK:  CA AE
+    // UTF8: E5 8D 81
+    //unicode:
+    //s := "十"
+
+    // utf8: C38A  C2AE
+    // C38A --> 195 138 --> U+00CA
+    // C2AE --> 194 174 --> U+00AE
+    s := "Ê®"
+    //fmt.Printf("%s \n", strings.ToUpper(hex.EncodeToString([]byte(s))))
+
+    r,_ := utf8.DecodeRuneInString("Ê")
+    fmt.Printf("%x \n", r)
+    r2,_ := utf8.DecodeRuneInString("®")
+    fmt.Printf("%x \n", r2)
+
+
+    g,_ := Utf8ToGbk([]byte(s))
+    fmt.Println("  --> gbk  ", g, string(g))
+
+    // u,_ := GbkToUtf8([]byte{0xCA, 0xAE})
+    u,_ := GbkToUtf8([]byte{byte(r), byte(r2)})
+    fmt.Println("  --> utf8  ", u, string(u))
+
+    //GbkToUtf8()
+    //Utf8ToGbk("十二大美女")
+}
 /**
 Format() Format
 FileType() FileType
