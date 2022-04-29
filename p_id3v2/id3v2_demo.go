@@ -1,6 +1,7 @@
 package main
 
 import (
+    "bufio"
     "bytes"
     "encoding/hex"
     "fmt"
@@ -30,8 +31,8 @@ func main() {
 
     //TestChar()
     //
-    mvMp3("Q:/音频类", "Q:/dest")
-    //mvMp3("Q:/test", "Q:/dest2/")
+    //mvMp3("Q:/音频类", "Q:/dest")
+    mvMp3("Q:/dest2", "Q:/dest")
 }
 
 func mvMp3(parentDir string, destDir string) {
@@ -53,9 +54,15 @@ func mvMp3(parentDir string, destDir string) {
         return
     }
 
+    log.Printf("已发现文件 %d \n", len(files))
+
+
+    logContent := ""
     for _, fileElement := range files {
-        log.Println(fileElement[0], " --> ", fileElement[1])
+        logContent += fileElement[0] + " --> " + fileElement[1] + "\n"
+        //log.Println(fileElement[0], " --> ", fileElement[1])
     }
+    writeLog("fileListLog.txt", logContent)
 
     fmt.Println("是否重命名(移动)文件 Y/N ?")
     var text string
@@ -79,6 +86,19 @@ func mvMp3(parentDir string, destDir string) {
         }
     }
 
+}
+
+func writeLog(fileName string, logContent string) {
+    fileListLog, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0666)
+    if err != nil {
+        fmt.Println("写日志失败", err)
+    } else {
+        fmt.Println("日志已写入", fileName)
+    }
+    defer fileListLog.Close()
+    write := bufio.NewWriter(fileListLog)
+    write.WriteString(logContent)
+    write.Flush()
 }
 
 func FixFileName(parentDir string, destDir string) (files [][]string, err error) {
@@ -108,9 +128,18 @@ func FixFileName(parentDir string, destDir string) (files [][]string, err error)
 
             //fmt.Println(metaInfo.Title(), file.Name())
             ext := filepath.Ext(file.Name())
-            if metaInfo.Title() + ext == file.Name() {
-                fmt.Println("\t 无需重命名 ", fileName)
-                return nil
+            fileNameForPath := ""
+
+            if metaInfo.Title() == "" {
+                fileNameForPath = file.Name()
+            } else {
+                if strings.Contains(metaInfo.Title(), file.Name()) || strings.Contains(file.Name(), metaInfo.Title()) {
+                    fmt.Println("\t 无需重命名 ", fileName)
+                    fileNameForPath = file.Name()
+                    //return nil
+                } else {
+                    fileNameForPath = metaInfo.Title() + ext
+                }
             }
             succCount++
 
@@ -133,15 +162,17 @@ func FixFileName(parentDir string, destDir string) (files [][]string, err error)
                 midPath = append(midPath, metaInfo.Album())
             }
 
-            if metaInfo.Title() != "" {
-                midPath = append(midPath, metaInfo.Title() + ext)
-            } else {
-                midPath = append(midPath, file.Name())
-            }
+            //if metaInfo.Title() != "" {
+            //    midPath = append(midPath, fileNameForPath)
+            //} else {
+            //    midPath = append(midPath, file.Name())
+            //}
+             midPath = append(midPath, fileNameForPath)
 
             newName := destDir +
                 strings.ReplaceAll(
                     strings.ReplaceAll(
+                        strings.ReplaceAll(
                         strings.ReplaceAll(
                         strings.ReplaceAll(
                         strings.ReplaceAll(
@@ -153,6 +184,7 @@ func FixFileName(parentDir string, destDir string) (files [][]string, err error)
                     "?",""),
                     "<",""),
                     ">",""),
+                    "|",""),
                     "\\",""),
                 "\"","")
             fileElement := []string{fileName, newName}
