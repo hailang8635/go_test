@@ -46,10 +46,10 @@ func main() {
     //da----          2020/7/5     13:04                wd_elements
     //da----         2020/9/26     15:25                wym
     //da----        2020/12/27     11:28                迅雷下载
-    llDir("Y:/视频类/")
-    llDir("Y:/音频类/")
-    llDir("Y:/照片类/")
-    llDir("Z:/")
+    llDir("U:/")
+    llDir("R:/")
+    llDir("V:/")
+    llDir("W:/")
 }
 
 func llDir(parentDir string) {
