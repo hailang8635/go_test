@@ -9,9 +9,9 @@ if [ -n "$1" ]
 then
   package_version=$1
 else
-  package_version="0.0.1"
+  package_version="1.0.0"
 fi
 
 echo "package $package_version .."
-docker build -t registry.cn-shanghai.aliyuncs.com/jrdn/nginx-web-files:0.0.1 .
-docker push registry.cn-shanghai.aliyuncs.com/jrdn/nginx-web-files:0.0.1
+docker build -t registry.cn-shanghai.aliyuncs.com/jrdn/nginx-web-files:$package_version .
+docker push registry.cn-shanghai.aliyuncs.com/jrdn/nginx-web-files:$package_version
